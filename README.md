@@ -27,7 +27,6 @@ O desafio proposto busca apoiar a transformação digital de negócios familiare
 - 🛍️ **Catálogo de Produtos:** lista de produtos artesanais e hortifrúti disponíveis.  
 - 🧾 **Carrinho de Compras:** permite selecionar produtos e gerar um resumo do pedido.  
 - 📲 **Integração com WhatsApp:** ao finalizar a compra, o cliente é **redirecionado automaticamente para o WhatsApp**, com uma mensagem contendo **todos os detalhes do pedido**, que é enviada diretamente para a Sra. Lourdes.  
-- 👤 **Gestão de Clientes:** cadastro e controle básico dos pedidos realizados.  
 - 🧰 **Painel de Administração:** para gerenciar produtos e informações de forma simples.
 
 ---
