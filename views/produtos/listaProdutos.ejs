@@ -1,0 +1,514 @@
+<%- include("../partials/header.ejs") %>
+<style>
+  :root {
+    --primary-color: #2e7d32;
+    --secondary-color: #6c757d;
+    --accent-color: #ffc107;
+    --light-bg: #f8f9fa;
+    --dark-text: #212529;
+  }
+
+  body {
+    background-color: #f5f5f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .header-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: inline-block;
+  }
+
+  .header-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--accent-color);
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .card-produto {
+    min-height: 380px;
+    max-height: 380px;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-produto:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-produto .card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1.25rem;
+  }
+
+  .card-produto .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-text);
+    margin-bottom: 0.75rem;
+    height: 2.5rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  img {
+    max-width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .card-produto:hover img {
+    transform: scale(1.03);
+  }
+
+  .filtro-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 1.25rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .filtros-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ordenacao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+
+  .form-check-label {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .btn-outline-secondary {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: var(--secondary-color);
+    color: white;
+  }
+
+  .btn-success {
+    background-color: var(--primary-color);
+    border: none;
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background-color: #1b5e20;
+    transform: scale(1.1);
+  }
+
+  .btn-success i {
+    color: white;
+    font-size: 1rem;
+  }
+
+  .price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+  }
+
+  .out-of-stock {
+    color: #dc3545;
+    font-weight: 500;
+  }
+
+  .badge-category {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 193, 7, 0.9);
+    color: var(--dark-text);
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .container {
+    max-width: 1200px;
+    padding-bottom: 2rem;
+  }
+
+  @media (max-width: 576px) {
+    .filtro-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .card-produto {
+      min-height: 320px;
+      max-height: 320px;
+    }
+
+    .header-title {
+      font-size: 1.8rem;
+    }
+  }
+
+  /* Efeito de loading para imagens */
+  .img-loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .price-unit {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    font-weight: normal;
+    margin-left: 2px;
+  }
+</style>
+</head>
+
+<body>
+  <%- include('../partials/navbar') %>
+  <div class="container mt-4">
+    
+    <h2 class="text-center mb-4 header-title">Nossos Produtos</h2>
+
+    <!-- Filtro e Ordenação -->
+    <div class="card shadow-sm mb-4 border-0">
+      <div class="card-body filtro-card">
+        <!-- Filtros -->
+        <div class="filtros-categorias">
+          <label class="form-label mb-0 fw-medium">Filtrar por:</label>
+          <div class="form-check">
+            <input class="form-check-input filtro-categoria" type="checkbox" value="Frutas" id="checkFrutas">
+            <label class="form-check-label" for="checkFrutas">
+              <i class="bi bi-apple me-1"></i> Frutas
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input filtro-categoria" type="checkbox" value="Verduras" id="checkVerduras">
+            <label class="form-check-label" for="checkVerduras">
+              <i class="bi bi-flower1 me-1"></i> Verduras
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input filtro-categoria" type="checkbox" value="Legumes" id="checkLegumes">
+            <label class="form-check-label" for="checkLegumes">
+              <i class="bi bi-egg-fried me-1"></i> Legumes
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input filtro-categoria" type="checkbox" value="Artesanato" id="checkArtesanato">
+            <label class="form-check-label" for="checkArtesanato">
+              <i class="bi bi-brush me-1"></i> Artesanato
+            </label>
+          </div>
+
+          <!-- Filtro de estoque -->
+          <div class="form-check ms-3">
+            <input class="form-check-input" type="checkbox" id="checkEstoque">
+            <label class="form-check-label" for="checkEstoque">
+              <i class="bi bi-check-circle me-1"></i> Somente em estoque
+            </label>
+          </div>
+
+          <button id="limparFiltros" class="btn btn-outline-secondary btn-sm ms-2">
+            <i class="bi bi-x-circle me-1"></i> Limpar
+          </button>
+        </div>
+
+        <!-- Ordenação -->
+        <div class="ordenacao">
+          <label for="ordenacaoSelect" class="form-label mb-0 fw-medium">Ordenar:</label>
+          <select class="form-select form-select-sm" id="ordenacaoSelect" style="max-width: 200px;">
+            <option selected value="">Padrão</option>
+            <option value="titulo-asc"><i class="bi bi-sort-alpha-down"></i> Nome (A-Z)</option>
+            <option value="titulo-desc"><i class="bi bi-sort-alpha-down-alt"></i> Nome (Z-A)</option>
+            <option value="preco-asc"><i class="bi bi-sort-numeric-down"></i> Preço (Menor → Maior)</option>
+            <option value="preco-desc"><i class="bi bi-sort-numeric-down-alt"></i> Preço (Maior → Menor)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Produtos -->
+    <div class="row g-4" id="produtos-lista">
+      <% produtos.forEach(produto => { %>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-3" data-categoria="<%= produto.category %>" data-id="<%= produto.id %>" data-stock="<%= produto.stock %>">
+
+        <div class="card h-100 card-produto">
+          <a href="/produto/<%= produto.id %>" class="text-decoration-none text-dark">
+            <div class="position-relative">
+              <img src="<%= produto.image %>" class="card-img-top" alt="<%= produto.title %>" onerror="this.src='https://via.placeholder.com/300x200?text=Produto+Sem+Imagem';this.onerror=null;">
+              <span class="badge-category"><%= produto.category %></span>
+            </div>
+          </a>
+
+          <div class="card-body d-flex flex-column p-3">
+            <!-- Adicionei p-3 para um padding mais compacto -->
+            <h5 class="card-title mb-1"><%= produto.title %></h5> <!-- Reduzi o margin-bottom para mb-1 -->
+
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <!-- Reduzi o margin-top para mt-2 -->
+              <% if (produto.stock <= 0) { %>
+              <p class="out-of-stock m-0">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                <strong>Sem Estoque</strong>
+              </p>
+              <% } else { 
+                const unit = (produto.category === 'Artesanato') ? 'un' : 'kg';
+                const priceFormatted = typeof produto.price === 'number' ? produto.price.toFixed(2).replace('.', ',') : String(produto.price).replace('.', ',');
+            %>
+              <p class="price m-0">
+                <strong>R$ <%= priceFormatted %></strong>
+                <span class="price-unit">/<%= unit %></span>
+              </p>
+              <button class="btn btn-success btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" onclick='addToCart({
+                id: "<%= produto.id %>",
+                title: "<%= produto.title %>",
+                price: <%= produto.price %>,
+                category: "<%= produto.category %>"
+              })'>
+                <i class="bi bi-cart-plus-fill"></i>
+              </button>
+              <% } %>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <% }) %>
+    </div>
+
+
+
+
+
+    <!-- Paginação -->
+    <nav aria-label="Page navigation" class="mt-5">
+      <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+          <a class="page-link" href="#">Próxima</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <%- include('../partials/carrinho/carrinho-modal') %>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Função para simular adição ao carrinho
+    function addToCart(productId) {
+      const btn = event.target.closest('button');
+      btn.innerHTML = '<i class="bi bi-check"></i>';
+      btn.style.backgroundColor = '#4caf50';
+
+      setTimeout(() => {
+        btn.innerHTML = '<i class="bi bi-cart-plus"></i>';
+        btn.style.backgroundColor = 'var(--primary-color)';
+      }, 1000);
+
+      // Aqui você pode adicionar a lógica real para adicionar ao carrinho
+      console.log(`Produto ${productId} adicionado ao carrinho`);
+    }
+
+    function aplicarFiltros() {
+      const checkboxes = document.querySelectorAll('.filtro-categoria');
+      const somenteEstoque = document.getElementById('checkEstoque').checked;
+      const categoriasSelecionadas = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      const produtos = document.querySelectorAll('[data-categoria]');
+      let produtosVisiveis = 0;
+
+      produtos.forEach(produto => {
+        const categoria = produto.getAttribute('data-categoria');
+        const estoque = parseInt(produto.getAttribute('data-stock'), 10);
+
+        const categoriaOk = categoriasSelecionadas.length === 0 || categoriasSelecionadas.includes(categoria);
+        const estoqueOk = !somenteEstoque || estoque > 0;
+
+        if (categoriaOk && estoqueOk) {
+          produto.style.display = 'block';
+          produtosVisiveis++;
+        } else {
+          produto.style.display = 'none';
+        }
+      });
+
+      // Mostrar mensagem se nenhum produto for encontrado
+      const emptyMessage = document.getElementById('empty-message');
+      if (emptyMessage) {
+        emptyMessage.remove();
+      }
+
+      if (produtosVisiveis === 0) {
+        const lista = document.getElementById('produtos-lista');
+        const message = document.createElement('div');
+        message.id = 'empty-message';
+        message.className = 'col-12 text-center py-5';
+        message.innerHTML = `
+          <i class="bi bi-exclamation-circle fs-1 text-muted mb-3"></i>
+          <h4 class="text-muted">Nenhum produto encontrado</h4>
+          <p class="text-muted">Tente ajustar seus filtros de busca</p>
+          <button id="limparFiltros2" class="btn btn-primary mt-3">
+            <i class="bi bi-x-circle me-1"></i> Limpar filtros
+          </button>
+        `;
+        lista.appendChild(message);
+
+        document.getElementById('limparFiltros2').addEventListener('click', function() {
+          document.querySelectorAll('.filtro-categoria, #checkEstoque').forEach(cb => cb.checked = false);
+          aplicarFiltros();
+        });
+      }
+    }
+
+    // Adiciona evento a todos os checkboxes
+    document.querySelectorAll('.filtro-categoria, #checkEstoque').forEach(cb => {
+      cb.addEventListener('change', aplicarFiltros);
+    });
+
+    // Botão limpar
+    document.getElementById('limparFiltros').addEventListener('click', function() {
+      document.querySelectorAll('.filtro-categoria, #checkEstoque').forEach(cb => cb.checked = false);
+      aplicarFiltros();
+    });
+
+    // Ordenação
+// Ordenação
+document.getElementById('ordenacaoSelect').addEventListener('change', function() {
+  const criterio = this.value;
+  if (!criterio) return; // Se for selecionado "Padrão", não faz nada
+  
+  const container = document.getElementById('produtos-lista');
+  
+  // Seleciona apenas os produtos visíveis (não ocultos pelos filtros)
+  const produtos = Array.from(container.querySelectorAll('[data-categoria]'))
+    .filter(prod => prod.style.display !== 'none');
+  
+  produtos.sort((a, b) => {
+    const tituloA = a.querySelector('.card-title').textContent.trim().toLowerCase();
+    const tituloB = b.querySelector('.card-title').textContent.trim().toLowerCase();
+    
+    // Função para extrair o preço corretamente
+    const extrairPreco = (element) => {
+      const priceElement = element.querySelector('.price');
+      if (!priceElement) return 0;
+      
+      // Pega o texto, remove "R$", espaços e divide pelo separador de unidade
+      const priceText = priceElement.textContent
+        .replace('R$', '')
+        .trim()
+        .split('/')[0]
+        .trim()
+        .replace(',', '.');
+      
+      return parseFloat(priceText) || 0;
+    };
+    
+    const precoA = extrairPreco(a);
+    const precoB = extrairPreco(b);
+
+    switch (criterio) {
+      case 'titulo-asc':
+        return tituloA.localeCompare(tituloB);
+      case 'titulo-desc':
+        return tituloB.localeCompare(tituloA);
+      case 'preco-asc':
+        return precoA - precoB;
+      case 'preco-desc':
+        return precoB - precoA;
+      default:
+        return 0;
+    }
+  });
+
+  // Reorganiza os produtos no DOM
+  produtos.forEach(produto => {
+    container.appendChild(produto);
+  });
+});
+
+    // Pré-carregamento de imagens
+    document.addEventListener('DOMContentLoaded', function() {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        if (!img.complete) {
+          img.classList.add('img-loading');
+        }
+        img.onload = function() {
+          this.classList.remove('img-loading');
+        };
+        img.onerror = function() {
+          this.classList.remove('img-loading');
+        };
+      });
+    });
+  </script>
+
+  <%- include('../partials/carrinho/carrinho-scripts') %>
+
+</body>
+
+</html>

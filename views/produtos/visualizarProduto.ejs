@@ -1,0 +1,186 @@
+<%- include("../partials/header.ejs") %>
+<style>
+  :root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+  }
+
+  body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .product-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    background: white;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 20px;
+    background: #fff;
+    border-right: 1px solid #eee;
+  }
+
+  .product-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .product-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  .price-unit {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 400;
+    margin-left: 0.3rem;
+  }
+
+  .btn-buy {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+  }
+
+  .btn-buy:hover {
+    background-color: #c0392b;
+  }
+
+
+
+
+  .stock-badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+  }
+
+  .product-description {
+    line-height: 1.8;
+    color: #555;
+  }
+
+  .out-of-stock {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .product-image {
+      border-right: none;
+      border-bottom: 1px solid #eee;
+      height: 300px;
+    }
+  }
+</style>
+</head>
+
+<body>
+<%- include('../partials/navbar') %>
+  <div class="container py-5">
+
+    
+    <div class="product-card">
+      <div class="row g-0">
+        <!-- Imagem do Produto -->
+        <div class="col-md-5">
+          <img src="<%= produto.image %>" class="product-image" alt="<%= produto.title %>">
+        </div>
+
+        <!-- Detalhes do Produto -->
+        <div class="col-md-7">
+          <div class="card-body p-4 p-lg-5">
+            <h1 class="product-title"><%= produto.title %></h1>
+
+            <!-- Avaliação (placeholder) -->
+            <div class="mb-3">
+              <span class="text-warning">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-half"></i>
+              </span>
+              <span class="ms-2 text-muted">(42 avaliações)</span>
+            </div>
+
+            <p class="product-description mb-4"><%= produto.description %></p>
+
+            <% if (produto.stock <= 0) { %>
+            <div class="alert alert-danger out-of-stock mb-4" role="alert">
+              <i class="bi bi-exclamation-triangle-fill"></i> Produto esgotado
+            </div>
+            <button class="btn btn-outline-secondary btn-lg" disabled>
+              Avise-me quando chegar
+            </button>
+            <% } else { %>
+            <div class="d-flex align-items-center mb-3">
+              <div class="d-flex align-items-baseline">
+                <span class="product-price"> R$ <%= typeof produto.price === 'number' ? produto.price.toFixed(2).replace('.', ',') : String(produto.price).replace('.', ',') %></span>
+                <span class="price-unit">
+                  <% if (['legumes', 'verduras', 'frutas'].includes(produto.category.toLowerCase())) { %>
+                  /kg
+                  <% } else if (produto.category.toLowerCase() === 'artesanato') { %>
+                  /unid.
+                  <% } %>
+                </span>
+              </div>
+              <span class="badge bg-success stock-badge ms-3">
+                <i class="bi bi-check-circle-fill"></i>
+                <% if (['legumes', 'verduras', 'frutas'].includes(produto.category.toLowerCase())) { %>
+                Disponível
+                <% } else { %>
+                Em estoque: <%= produto.stock %> unid.
+                <% } %>
+              </span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 mt-4">
+              <a href="/produtos/comprar/<%= produto.id %>" class="btn btn-buy btn-lg text-white">
+                <i class="bi bi-bag-check-fill me-2"></i> Comprar agora
+              </a>
+
+              <button class="btn btn-cart btn-warning position-relative" onclick='addToCart({
+                  id: "<%= produto.id %>",
+                  title: "<%= produto.title %>",
+                  price: <%= produto.price %>,
+                  category: "<%= produto.category %>"
+                  })'>
+                <i class="bi bi-cart-plus-fill me-2"></i> Adicionar ao Carrinho
+              </button>
+
+
+
+
+            </div>
+
+            <div class="mt-4 pt-3 border-top">
+              <p class="mb-2"><i class="bi bi-truck text-primary me-2"></i> Frete a combinar</p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include("../partials/carrinho/carrinho-modal.ejs") %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <%- include("../partials/carrinho/carrinho-scripts.ejs") %>
+</body>
+
+</html>

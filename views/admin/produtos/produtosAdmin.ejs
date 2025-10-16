@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciamento de Produtos</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --accent-color: #e74c3c;
+      }
+
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 4px;
+        border: 1px solid #dee2e6;
+        padding: 5px;
+        background: white;
+      }
+
+      .table-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      }
+
+      .table thead th {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 500;
+        border-bottom: none;
+      }
+
+      .table tbody tr:hover {
+        background-color: rgba(52, 152, 219, 0.05);
+      }
+
+      .btn-add {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 500;
+      }
+
+      .btn-add:hover {
+        background-color: #1a252f;
+        color: white;
+      }
+
+      .badge-category {
+        background-color: #e9ecef;
+        color: #495057;
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+
+      .stock-high {
+        color: #28a745;
+        font-weight: 500;
+      }
+
+      .stock-low {
+        color: #ffc107;
+        font-weight: 500;
+      }
+
+      .stock-empty {
+        color: var(--accent-color);
+        font-weight: 500;
+      }
+
+      .search-container {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .search-container i {
+        position: absolute;
+        top: 12px;
+        left: 15px;
+        color: #6c757d;
+      }
+
+      .search-input {
+        padding-left: 40px;
+        border-radius: 50px;
+        border: 1px solid #ced4da;
+      }
+
+      .pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+
+      .pagination .page-link {
+        color: var(--primary-color);
+      }
+
+      .actions-cell {
+        white-space: nowrap;
+      }
+
+      /* Correção para o modal */
+      .modal-body p {
+        margin-bottom: 1rem;
+      }
+
+      .modal-body p:last-child {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../../partials/navbar') %>
+    <div class="container py-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">
+          <i class="bi bi-box-seam me-2"></i>Gerenciamento de Produtos
+        </h2>
+        <a href="/admin/produtos/cadastro" class="btn btn-add">
+          <i class="bi bi-plus-lg me-1"></i>Cadastrar Produto
+        </a>
+      </div>
+
+      <!-- Barra de Pesquisa e Filtros -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="search-container">
+            <i class="bi bi-search"></i>
+            <input
+              type="text"
+              id="searchInput"
+              class="form-control search-input"
+              placeholder="Pesquisar produtos..."
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select id="categoryFilter" class="form-select">
+            <option value="">Todas categorias</option>
+            <option value="legumes">Legumes</option>
+            <option value="verduras">Verduras</option>
+            <option value="frutas">Frutas</option>
+            <option value="artesanato">Artesanatos</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select id="stockFilter" class="form-select">
+            <option value="">Todos status</option>
+            <option value="high">Em estoque (>10)</option>
+            <option value="low">Estoque baixo (1-10)</option>
+            <option value="empty">Esgotado</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabela de Produtos -->
+      <div class="table-container">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th style="width: 25%">Produto</th>
+              <th style="width: 15%">Preço</th>
+              <th style="width: 15%">Categoria</th>
+              <th style="width: 15%">Estoque</th>
+              <th style="width: 10%">Imagem</th>
+              <th style="width: 20%" class="text-end">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable">
+            <% produtos.forEach(produto => { %>
+            <tr
+              data-category="<%= produto.category.toLowerCase() %>"
+              data-stock="<%= produto.stock %>"
+            >
+              <td>
+                <div class="fw-semibold"><%= produto.title %></div>
+                <% if (produto.description && produto.description.length > 0) {
+                %>
+                <small class="text-muted"
+                  ><%= produto.description.substring(0, 50) %><%=
+                  produto.description.length > 50 ? '...' : '' %></small
+                >
+                <% } %>
+              </td>
+              <td>
+                R$ <%= typeof produto.price === 'number' ?
+                produto.price.toFixed(2).replace('.', ',') :
+                String(produto.price).replace('.', ',') %>
+                <small class="text-muted d-block">
+                  <% if (['legumes', 'verduras',
+                  'frutas'].includes(produto.category.toLowerCase())) { %> /kg
+                  <% } else if (produto.category.toLowerCase() === 'artesanato')
+                  { %> /unid. <% } %>
+                </small>
+              </td>
+              <td>
+                <span class="badge badge-category"
+                  ><%= produto.category %></span
+                >
+              </td>
+              <td>
+                <% if (produto.stock > 10) { %>
+                <span class="stock-high"
+                  ><i class="bi bi-check-circle-fill me-1"></i><%= produto.stock
+                  %></span
+                >
+                <% } else if (produto.stock > 0) { %>
+                <span class="stock-low"
+                  ><i class="bi bi-exclamation-triangle-fill me-1"></i><%=
+                  produto.stock %></span
+                >
+                <% } else { %>
+                <span class="stock-empty"
+                  ><i class="bi bi-x-circle-fill me-1"></i>Esgotado</span
+                >
+                <% } %>
+              </td>
+              <td>
+                <img
+                  src="<%= produto.image %>"
+                  class="product-img"
+                  alt="<%= produto.title %>"
+                  title="<%= produto.title %>"
+                />
+              </td>
+              <td class="actions-cell text-end">
+                <!-- Botão Editar -->
+                <a
+                  href="/admin/produtos/editar/<%= produto.id %>"
+                  class="btn btn-sm btn-outline-primary me-1"
+                  title="Editar"
+                >
+                  <i class="bi bi-pencil-fill"></i>
+                </a>
+
+                <!-- Botão Visualizar -->
+                <a
+                  href="/produto/<%= produto.id %>"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-secondary me-1"
+                  title="Visualizar"
+                >
+                  <i class="bi bi-eye-fill"></i>
+                </a>
+
+                <!-- Botão Deletar -->
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalDeletar<%= produto.id %>"
+                  title="Excluir"
+                >
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+
+                <!-- Modal de Confirmação - Corrigido -->
+                <div
+                  class="modal fade"
+                  id="modalDeletar<%= produto.id %>"
+                  tabindex="-1"
+                  aria-labelledby="modalLabel<%= produto.id %>"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5
+                          class="modal-title"
+                          id="modalLabel<%= produto.id %>"
+                        >
+                          Confirmar exclusão
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Fechar"
+                        ></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <p>
+                            Tem certeza que deseja deletar o produto abaixo?
+                          </p>
+                          <div class="alert alert-light">
+                            <strong><%= produto.title %></strong><br />
+                            <small>Categoria: <%= produto.category %></small>
+                          </div>
+                        </div>
+                        <div class="alert alert-warning">
+                          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                          Esta ação não poderá ser desfeita !!!.
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Cancelar
+                        </button>
+                        <form
+                          method="POST"
+                          action="/admin/produtos/deletar/<%= produto.id %>"
+                        >
+                          <button type="submit" class="btn btn-danger">
+                            Confirmar Exclusão
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginação -->
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true"
+              >Anterior</a
+            >
+          </li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Próxima</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- JS Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para pesquisa/filtros FUNCIONAL -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const stockFilter = document.getElementById("stockFilter");
+        const rows = document.querySelectorAll("#productsTable tr");
+
+        function filterProducts() {
+          const searchTerm = searchInput.value.toLowerCase();
+          const selectedCategory = categoryFilter.value;
+          const selectedStock = stockFilter.value;
+
+          rows.forEach((row) => {
+            const productName = row
+              .querySelector("td")
+              .textContent.toLowerCase();
+            const productCategory = row.getAttribute("data-category");
+            const productStock = parseInt(row.getAttribute("data-stock"));
+
+            // Verifica se o produto corresponde aos critérios de filtro
+            const matchesSearch = productName.includes(searchTerm);
+            const matchesCategory =
+              !selectedCategory || productCategory === selectedCategory;
+
+            let matchesStock = true;
+            if (selectedStock === "high") {
+              matchesStock = productStock > 10;
+            } else if (selectedStock === "low") {
+              matchesStock = productStock > 0 && productStock <= 10;
+            } else if (selectedStock === "empty") {
+              matchesStock = productStock <= 0;
+            }
+
+            if (matchesSearch && matchesCategory && matchesStock) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        }
+
+        // Adiciona eventos para todos os filtros
+        searchInput.addEventListener("input", filterProducts);
+        categoryFilter.addEventListener("change", filterProducts);
+        stockFilter.addEventListener("change", filterProducts);
+      });
+    </script>
+  </body>
+</html>

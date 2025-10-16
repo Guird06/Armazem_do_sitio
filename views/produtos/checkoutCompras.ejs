@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finalizar Compra</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .checkout-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .product-image {
+        max-width: 100%;
+        height: 120px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+      .btn-whatsapp {
+        background-color: #25d366;
+        color: white;
+      }
+      .btn-whatsapp:hover {
+        background-color: #128c7e;
+        color: white;
+      }
+      .form-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+      .price-tag {
+        font-size: 1.2rem;
+        color: #198754;
+        font-weight: bold;
+      }
+      .cart-item {
+        border-bottom: 1px solid #eee;
+        padding: 1rem 0;
+      }
+      .cart-item:last-child {
+        border-bottom: none;
+      }
+      .total-section {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+      }
+      .loading-spinner {
+        display: none; /* Escondido inicialmente */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary">Finalize sua Compra</h1>
+            <p class="lead">Revise seus itens e preencha seus dados</p>
+          </div>
+
+          <div class="row g-4">
+            <!-- Lista de Produtos do Carrinho -->
+            <div class="col-md-7">
+              <div class="checkout-card">
+                <h4 class="mb-4 fw-bold">Seus Itens</h4>
+                <div
+                  id="loading-spinner"
+                  class="text-center py-5 loading-spinner"
+                >
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                  </div>
+                  <p class="mt-2">Carregando seu carrinho...</p>
+                </div>
+                <div id="cart-items-container">
+                  <!-- Itens serão carregados via JavaScript -->
+                </div>
+
+                <div class="total-section">
+                  <div class="d-flex justify-content-between">
+                    <h5 class="fw-bold">Total:</h5>
+                    <h5 class="fw-bold text-success" id="cart-total">
+                      R$ 0,00
+                    </h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Formulário de Compra -->
+            <div class="col-md-5">
+              <div class="form-section">
+                <h4 class="mb-4 fw-bold">Informações para Compra</h4>
+                <form
+                  id="checkout-form"
+                  action="/produtos/checkout"
+                  method="POST"
+                >
+                  <div class="mb-3">
+                    <label for="nome" class="form-label fw-bold"
+                      >Nome Completo</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control py-2"
+                      id="nome"
+                      name="nome"
+                      placeholder="Digite seu nome"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="pagamento" class="form-label fw-bold"
+                      >Forma de Pagamento</label
+                    >
+                    <select
+                      class="form-select py-2"
+                      id="pagamento"
+                      name="pagamento"
+                      required
+                    >
+                      <option value="" selected disabled>Selecione...</option>
+                      <option value="Cartão">Cartão de Crédito</option>
+                      <option value="Pix">PIX</option>
+                      <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="observacoes" class="form-label fw-bold"
+                      >Observações (Opcional)</label
+                    >
+                    <textarea
+                      class="form-control py-2"
+                      id="observacoes"
+                      name="observacoes"
+                      placeholder="Informações adicionais sobre o pedido ou entrega"
+                      rows="3"
+                    ></textarea>
+                  </div>
+
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary py-2">
+                      <i class="bi bi-check-circle me-2"></i> Finalizar Compra
+                    </button>
+                    <a href="/produtos" class="btn btn-outline-secondary py-2">
+                      <i class="bi bi-arrow-left me-2"></i> Continuar Comprando
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Função para formatar preço
+      function formatPrice(price) {
+        return parseFloat(price).toFixed(2).replace(".", ",");
+      }
+
+      // Mostra o spinner de carregamento
+      function showLoading() {
+        document.getElementById("loading-spinner").style.display = "block";
+        document.getElementById("cart-items-container").innerHTML = "";
+      }
+
+      // Esconde o spinner de carregamento
+      function hideLoading() {
+        document.getElementById("loading-spinner").style.display = "none";
+      }
+
+      // Carrega os itens do carrinho quando a página é aberta
+      document.addEventListener("DOMContentLoaded", async () => {
+        showLoading();
+
+        try {
+          const cart = JSON.parse(localStorage.getItem("meuCarrinho")) || [];
+
+          if (cart.length === 0) {
+            hideLoading();
+            document.getElementById("cart-items-container").innerHTML =
+              '<div class="alert alert-info">Seu carrinho está vazio</div>';
+            return;
+          }
+
+          // Envia os IDs para o servidor
+          const response = await fetch("/produtos/get-cart-items", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              cartItems: cart.map((item) => item.id),
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Erro ao carregar itens");
+          }
+
+          const produtos = await response.json();
+
+          // Combina os dados do carrinho com os dados do banco
+          const completeCartItems = cart.map((cartItem) => {
+            const produto = produtos.find(
+              (p) => p.id.toString() === cartItem.id.toString()
+            );
+            return {
+              ...cartItem,
+              ...produto,
+              price: produto.price,
+            };
+          });
+
+          // Renderiza os itens
+          renderCartItems(completeCartItems);
+        } catch (error) {
+          console.error("Erro:", error);
+          document.getElementById("cart-items-container").innerHTML = `
+                <div class="alert alert-danger">
+                    Erro ao carregar carrinho. <button onclick="location.reload()" class="btn btn-sm btn-outline-danger">Tentar novamente</button>
+                </div>
+            `;
+        } finally {
+          hideLoading();
+        }
+      });
+
+      function renderCartItems(items) {
+        const container = document.getElementById("cart-items-container");
+        let html = "";
+        let total = 0;
+
+        items.forEach((item) => {
+          const subtotal = item.price * item.quantity;
+          total += subtotal;
+
+          // Determina se é um item que deve ser mostrado por kg (frutas, legumes, verduras)
+          const isPerKg =
+            item.category &&
+            (item.category.toLowerCase().includes("fruta") ||
+              item.category.toLowerCase().includes("legume") ||
+              item.category.toLowerCase().includes("verdura"));
+
+          html += `
+                <div class="cart-item">
+                    <div class="row">
+                        <div class="col-3">
+                            <img src="${
+                              item.image || "/images/placeholder-product.png"
+                            }" 
+                                 alt="${
+                                   item.title
+                                 }" class="product-image img-fluid">
+                        </div>
+                        <div class="col-6">
+                            <h6 class="fw-bold">${item.title}</h6>
+                            <p class="text-muted">R$ ${formatPrice(
+                              item.price
+                            )} ${isPerKg ? "por kg" : "cada"}</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-sm btn-outline-secondary p-0" style="width:24px;height:24px;" 
+                                        onclick="updateQuantity('${
+                                          item.id
+                                        }', -1)">
+                                    <i class="bi bi-dash" style="font-size:0.7rem;"></i>
+                                </button>
+                                <span class="fw-bold">${item.quantity}</span>
+                                <button class="btn btn-sm btn-outline-secondary p-0" style="width:24px;height:24px;" 
+                                        onclick="updateQuantity('${
+                                          item.id
+                                        }', 1)">
+                                    <i class="bi bi-plus" style="font-size:0.7rem;"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-3 text-end">
+                            <p class="price-tag">R$ ${formatPrice(subtotal)}</p>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart('${
+                              item.id
+                            }')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML =
+          html || '<div class="alert alert-info">Nenhum item no carrinho</div>';
+        document.getElementById("cart-total").textContent = `R$ ${formatPrice(
+          total
+        )}`;
+      }
+      // Funções para manipular o carrinho
+      function updateQuantity(productId, change) {
+        let cart = JSON.parse(localStorage.getItem("meuCarrinho")) || [];
+        const itemIndex = cart.findIndex(
+          (item) => item.id.toString() === productId.toString()
+        );
+
+        if (itemIndex !== -1) {
+          cart[itemIndex].quantity += change;
+
+          if (cart[itemIndex].quantity <= 0) {
+            cart.splice(itemIndex, 1);
+          }
+
+          localStorage.setItem("meuCarrinho", JSON.stringify(cart));
+          location.reload();
+        }
+      }
+
+      function removeFromCart(productId) {
+        let cart = JSON.parse(localStorage.getItem("meuCarrinho")) || [];
+        cart = cart.filter(
+          (item) => item.id.toString() !== productId.toString()
+        );
+        localStorage.setItem("meuCarrinho", JSON.stringify(cart));
+        location.reload();
+      }
+
+      // Envio do formulário - apenas previne o comportamento padrão
+      document
+        .getElementById("checkout-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          // Mostrar loading
+          const submitBtn = e.target.querySelector('button[type="submit"]');
+          submitBtn.disabled = true;
+          submitBtn.innerHTML =
+            'Enviando... <span class="spinner-border spinner-border-sm"></span>';
+
+          try {
+            // 1. Pegar dados
+            const carrinho =
+              JSON.parse(localStorage.getItem("meuCarrinho")) || [];
+            if (carrinho.length === 0) {
+              throw new Error("Carrinho vazio");
+            }
+
+            // 2. Montar payload
+            const payload = {
+              nome: document.getElementById("nome").value.trim(),
+              pagamento: document.getElementById("pagamento").value,
+              observacoes: document.getElementById("observacoes").value?.trim() || null,
+              itens: carrinho.map((item) => ({
+                id: item.id,
+                title: item.title,
+                price: parseFloat(item.price),
+                quantity: parseInt(item.quantity),
+                category: item.category,
+              })),
+            };
+
+            // 3. Validar campos obrigatórios
+            if (!payload.nome || !payload.pagamento) {
+              throw new Error("Preencha todos os campos obrigatórios");
+            }
+
+            // 4. Enviar para o backend
+            const response = await fetch(
+              "http://localhost:3000/produtos/checkout",
+              {
+                // ATENÇÃO: Use a URL correta do seu backend
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              }
+            );
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || "Erro no servidor");
+            }
+
+            // 5. Processar resposta
+            const { whatsappUrl } = await response.json();
+
+            // 6. Limpar carrinho e redirecionar
+            localStorage.removeItem("meuCarrinho");
+            window.location.href = whatsappUrl;
+          } catch (error) {
+            console.error("Erro:", error);
+            alert(`Erro: ${error.message}`);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Finalizar Pedido";
+          }
+        });
+    </script>
+  </body>
+</html>

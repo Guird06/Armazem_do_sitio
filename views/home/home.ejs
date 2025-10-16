@@ -1,0 +1,198 @@
+<%- include("../partials/header.ejs") %>
+<%- include('../partials/navbar') %>
+
+<style>
+  /* Estilos personalizados para a home */
+  .hero-section {
+    background-color: #f9f3ee;
+    padding: 3rem 0;
+  }
+  
+  .carousel-item img {
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .carousel-caption {
+    background-color: rgba(248, 213, 184, 0.8);
+    border-radius: 10px;
+    bottom: 30px;
+    color: #5a3921;
+    padding: 15px;
+  }
+  
+  .section-title {
+    color: #5a3921;
+    font-weight: 700;
+    margin: 3rem 0 1.5rem;
+    position: relative;
+    text-align: center;
+  }
+  
+  .section-title:after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 3px;
+    background: #e74c3c;
+    margin: 10px auto;
+  }
+  
+  .features-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .feature-card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    min-height: 100%; /* Garante que todos os cards tenham a mesma altura */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .feature-card-body {
+    padding: 1.5rem;
+    flex: 1; /* Faz o corpo do card ocupar todo o espaço disponível */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .feature-card h3 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .feature-card p {
+    text-align: center;
+    flex-grow: 1; /* Faz o parágrafo ocupar o espaço restante */
+  }
+
+  /* Rodapé */
+  .footer {
+    background-color: #5a3921;
+    color: white;
+    padding: 2rem 0;
+    margin-top: 3rem;
+  }
+</style>
+
+<body>
+  <!-- Hero Section com Carrossel -->
+  <section class="hero-section">
+    <div class="container">
+      <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+          <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+        </div>
+        
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="/images/carousel1.jpg" class="d-block w-100" alt="Produtos frescos do Armazém do Sítio">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Produtos Frescos Direto do Sítio</h5>
+              <p>Frutas, verduras e legumes colhidos diariamente</p>
+            </div>
+          </div>
+          
+          <div class="carousel-item">
+            <img src="/images/carousel2.jpg" class="d-block w-100" alt="Entrega rápida na região">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Entregamos em Sua Casa</h5>
+              <p>Serviço de entrega para toda a região</p>
+            </div>
+          </div>
+          
+          <div class="carousel-item">
+            <img src="/images/carousel3.jpg" class="d-block w-100" alt="Qualidade garantida">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Qualidade que Você Conhece</h5>
+              <p>Produtos selecionados com cuidado e carinho</p>
+            </div>
+          </div>
+        </div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Destaques -->
+  <section class="container">
+    <h2 class="section-title">Por que comprar conosco?</h2>
+    
+    <div class="row">
+      <div class="col-md-4 d-flex">
+        <div class="card feature-card">
+          <div class="feature-card-body">
+            <div class="feature-icon">
+              <i class="bi bi-tree"></i>
+            </div>
+            <h3>Produtos Naturais</h3>
+            <p>Cultivados sem agrotóxicos, com todo cuidado do nosso sítio familiar</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 d-flex">
+        <div class="card feature-card">
+          <div class="feature-card-body">
+            <div class="feature-icon">
+              <i class="bi bi-truck"></i>
+            </div>
+            <h3>Entrega Rápida</h3>
+            <p>Entregamos em até 24h após o pedido para toda a região</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 d-flex">
+        <div class="card feature-card">
+          <div class="feature-card-body">
+            <div class="feature-icon">
+              <i class="bi bi-currency-dollar"></i>
+            </div>
+            <h3>Preço Justo</h3>
+            <p>Direto do produtor para você, sem intermediários</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container text-center">
+      <p>Armazém do Sítio - Produtos frescos direto para sua casa</p>
+      <p>© 2025 Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

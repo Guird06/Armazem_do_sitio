@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finalizar Compra - <%= produto.title %></title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .product-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+      .product-card:hover {
+        transform: translateY(-5px);
+      }
+      .product-image {
+        max-width: 100%;
+        height: 200px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+      .btn-whatsapp {
+        background-color: #25d366;
+        color: white;
+      }
+      .btn-whatsapp:hover {
+        background-color: #128c7e;
+        color: white;
+      }
+      .form-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+      }
+      .price-tag {
+        font-size: 1.5rem;
+        color: #198754;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-primary">Finalize sua Compra</h1>
+            <p class="lead">
+              Confira os detalhes do produto e preencha seus dados
+            </p>
+          </div>
+
+          <div class="row g-4">
+            <!-- Card do Produto -->
+            <div class="col-md-6">
+              <div class="product-card p-4 h-100">
+                <div class="text-center mb-4">
+                  <img
+                    src="<%= produto.image %>"
+                    alt="<%= produto.title %>"
+                    class="product-image img-fluid"
+                  />
+                </div>
+                <h3 class="fw-bold"><%= produto.title %></h3>
+                <div
+                  class="d-flex justify-content-between align-items-center mt-3"
+                >
+                  <span class="price-tag">
+                    R$ <%= typeof produto.price === 'number' ?
+                    produto.price.toFixed(2).replace('.', ',') :
+                    String(produto.price).replace('.', ',') %></span
+                  >
+                  <span class="badge bg-success">Valor a Pagar</span>
+                </div>
+                <hr />
+              </div>
+            </div>
+
+            <!-- Formulário de Compra -->
+            <div class="col-md-6">
+              <div class="form-section">
+                <h4 class="mb-4 fw-bold">Informações para Compra</h4>
+                <form
+                  method="POST"
+                  action="/produtos/comprar/<%= produto.id %>"
+                >
+                  <div class="mb-3">
+                    <label for="nome" class="form-label fw-bold"
+                      >Nome Completo</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control py-2"
+                      id="nome"
+                      name="nome"
+                      placeholder="Digite seu nome"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="pagamento" class="form-label fw-bold"
+                      >Forma de Pagamento</label
+                    >
+                    <select
+                      class="form-select py-2"
+                      id="pagamento"
+                      name="pagamento"
+                      required
+                    >
+                      <option value="" selected disabled>Selecione...</option>
+                      <option value="Cartão">Cartão de Crédito</option>
+                      <option value="Pix">PIX</option>
+                      <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                  </div>
+
+                  <!-- Campo de Observações Opcional -->
+                  <div class="mb-3">
+                    <label for="observacoes" class="form-label fw-bold"
+                      >Observações (Opcional)</label
+                    >
+                    <textarea
+                      class="form-control py-2"
+                      id="observacoes"
+                      name="observacoes"
+                      placeholder="Informações adicionais sobre o pedido ou entrega"
+                      rows="3"
+                    ></textarea>
+                  </div>
+
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary py-2">
+                      <i class="bi bi-check-circle me-2"></i> Finalizar Compra
+                    </button>
+                    <a href="/produtos" class="btn btn-outline-secondary py-2">
+                      <i class="bi bi-arrow-left me-2"></i> Continuar Comprando
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

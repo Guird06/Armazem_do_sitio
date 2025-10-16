@@ -1,0 +1,102 @@
+<script>
+  const cartKey = "meuCarrinho";
+
+  // Função para adicionar produto ao carrinho (já incluindo a categoria)
+  function addToCart(product) {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    const existingItem = cart.find((item) => item.id === product.id);
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        quantity: 1,
+        category: product.category // Garantindo que a categoria seja incluída
+      });
+    }
+
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    loadCart();
+  }
+
+  // Função para carregar o carrinho (mantém a mesma lógica)
+  function loadCart() {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    document.getElementById("cart-count").textContent = cart.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
+    const cartItems = document.getElementById("cart-items");
+    cartItems.innerHTML = "";
+
+    cart.forEach((item) => {
+      const subtotal = item.price * item.quantity;
+      const li = document.createElement("li");
+      li.className =
+        "list-group-item d-flex justify-content-between align-items-center";
+      li.innerHTML = `
+        <div>
+          <strong>${item.title}</strong><br>
+          ${item.quantity} × R$ ${item.price.toFixed(2).replace(".", ",")} = 
+          <strong>R$ ${subtotal.toFixed(2).replace(".", ",")}</strong>
+        </div>
+        <div class="d-flex align-items-center gap-1">
+          <button class="btn btn-sm btn-outline-secondary" onclick="decreaseQuantity('${
+            item.id
+          }')">
+            <i class="bi bi-dash"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="increaseQuantity('${
+            item.id
+          }')">
+            <i class="bi bi-plus"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="removeFromCart('${
+            item.id
+          }')">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+      cartItems.appendChild(li);
+    });
+  }
+
+  // As outras funções permanecem iguais
+  function increaseQuantity(productId) {
+    const cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    const item = cart.find((item) => item.id === productId);
+
+    if (item) {
+      item.quantity += 1;
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      loadCart();
+    }
+  }
+
+  function decreaseQuantity(productId) {
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    const item = cart.find((item) => item.id === productId);
+
+    if (item) {
+      item.quantity -= 1;
+      if (item.quantity <= 0) {
+        cart = cart.filter((i) => i.id !== productId);
+      }
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      loadCart();
+    }
+  }
+
+  function removeFromCart(productId) {
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+    cart = cart.filter((item) => item.id !== productId);
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+    loadCart();
+  }
+
+  document.addEventListener("DOMContentLoaded", loadCart);
+</script>
