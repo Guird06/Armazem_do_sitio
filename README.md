@@ -1,6 +1,6 @@
 # 🌿 Plataforma Digital — Armazém do Sítio
 
-Este projeto foi desenvolvido como parte do programa [**Talento Tech**](https://ead.uepg.br/site/talento_tech), com o objetivo de criar uma solução digital para pequenos empreendedores locais.  
+Este projeto foi desenvolvido para o Hackaton do projeto [**Talento Tech**](https://ead.uepg.br/site/talento_tech), com o objetivo de criar uma solução digital para pequenos empreendedores locais.  
 O desafio proposto busca apoiar a transformação digital de negócios familiares na região de Loanda/PR.
 
 ---
