@@ -12,7 +12,6 @@ O desafio proposto busca apoiar a transformação digital de negócios familiare
 - **Desafio:** Criar uma plataforma digital para o pequeno negócio de Lourdes, com:
   - 📦 Catálogo de produtos  
   - 💳 Pagamentos online / canal de pedido  
-  - 👥 Gestão de clientes  
 
 ### 📌 Contexto Local
 - População: **18 mil habitantes**  
