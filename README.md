@@ -36,7 +36,8 @@ O desafio proposto busca apoiar a transformação digital de negócios familiare
 
 💡 Veja abaixo um GIF do painel administrativo demo:
 
-![Dashboard Admin](https://github.com/Guird06/Armazem_do_sitio/gif/dashboard.gif)
+![Dashboard Admin](gif/dashboard.gif)
+
 
 
 
