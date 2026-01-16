@@ -1,6 +1,6 @@
 # 🌿 Plataforma Digital — Armazém do Sítio
 
-Este projeto foi desenvolvido para o Hackaton do projeto [**Talento Tech**](https://ead.uepg.br/site/talento_tech), com o objetivo de criar uma solução digital para pequenos empreendedores locais.  
+Este projeto foi desenvolvido para o Hackathon do projeto [**Talento Tech**](https://ead.uepg.br/site/talento_tech), com o objetivo de criar uma solução digital para pequenos empreendedores locais.  
 O desafio proposto busca apoiar a transformação digital de negócios familiares na região de Loanda/PR.
 
 ---
@@ -30,10 +30,29 @@ O desafio proposto busca apoiar a transformação digital de negócios familiare
 
 ---
 
+## 🔐 Área Administrativa
+
+> Se você quiser explorar a **área administrativa do Armazém do Sítio**, entre em contato comigo para receber um **login demo**.
+
+💡 Veja abaixo um GIF do painel administrativo demo:
+
+![Dashboard Admin](https://github.com/Guird06/Armazem_do_sitio/gif/dashboard.gif)
+
+
+
+## 🌐 Acesso Online
+
+Você pode acessar a versão pública do projeto aqui:  
+
+[https://armazemdositio-production.up.railway.app/](https://armazemdositio-production.up.railway.app/)
+
+
+
+
 ## 🛠️ Tecnologias Utilizadas
 
 | Tecnologia      | Descrição                                 |
-|------------------|--------------------------------------------|
+|-----------------|-------------------------------------------|
 | [Node.js](https://nodejs.org)        | Ambiente de execução JavaScript no servidor |
 | [Express](https://expressjs.com)     | Framework backend para Node.js |
 | [EJS](https://ejs.co)                | Template engine para renderização de páginas dinâmicas |
