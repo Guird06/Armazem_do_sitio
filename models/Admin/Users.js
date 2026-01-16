@@ -14,9 +14,10 @@ const Users = connection.define("users",{
 
 
 
-
+Users.sync()
 
 
 
 
 export default Users;
+
