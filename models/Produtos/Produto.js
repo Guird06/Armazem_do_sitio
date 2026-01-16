@@ -44,7 +44,8 @@ const Produto = connection.define("produtos", {
   },
 });
 
-Produto.sync()
+
 
 export default Produto;
+
 
