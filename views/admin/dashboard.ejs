@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciamento Administrativo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <h1 class="h3 mb-1">Gerenciamento Administrativo</h1>
+                  <p class="text-muted mb-0">Escolha uma área para administrar o sistema.</p>
+                </div>
+                <div>
+                  <a href="/admin/products" class="btn btn-outline-secondary me-2">Produtos</a>
+                  <a href="/admin/users" class="btn btn-outline-primary">Administradores</a>
+                </div>
+              </div>
+
+              <div class="row gy-4">
+                <div class="col-md-6">
+                  <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                      <div class="d-flex align-items-start gap-3">
+                        <div class="icon-box bg-primary text-white rounded-circle p-3">
+                          <i class="bi bi-box-seam fs-4"></i>
+                        </div>
+                        <div>
+                          <h5>Gerenciar Produtos</h5>
+                          <p class="text-muted mb-0">Add, editar e excluir produtos do catálogo.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-end">
+                      <a href="/admin/products" class="text-decoration-none">Ir para produtos <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                      <div class="d-flex align-items-start gap-3">
+                        <div class="icon-box bg-success text-white rounded-circle p-3">
+                          <i class="bi bi-person-lines-fill fs-4"></i>
+                        </div>
+                        <div>
+                          <h5>Gerenciar Administradores</h5>
+                          <p class="text-muted mb-0">Listar, cadastrar e remover contas de admin.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-end">
+                      <a href="/admin/users" class="text-decoration-none">Ir para admins <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                      <div class="d-flex align-items-start gap-3">
+                        <div class="icon-box bg-warning text-white rounded-circle p-3">
+                          <i class="bi bi-cart-check fs-4"></i>
+                        </div>
+                        <div>
+                          <h5>Vendas</h5>
+                          <p class="text-muted mb-0">Acompanhar vendas, filtros, status e performance em um painel único.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-end">
+                      <a href="/admin/sales" class="text-decoration-none">Abrir painel de vendas <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

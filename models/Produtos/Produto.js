@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 import connection from "../../database/connection.js";
 
-const Produto = connection.define("produtos", {
+const Product = connection.define("produtos", {
   id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -46,6 +46,6 @@ const Produto = connection.define("produtos", {
 
 
 
-export default Produto;
+export default Product;
 
 

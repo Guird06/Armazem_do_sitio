@@ -1,14 +1,15 @@
 import { Sequelize } from "sequelize";
 import connection from "../../database/connection.js";
 
-const Users = connection.define("users",{
-    login:{
+const Users = connection.define("users", {
+    login: {
         type: Sequelize.STRING,
-        allowNull:false
+        allowNull: false,
+        unique: true
     },
-    password:{
-        type:Sequelize.STRING,
-        allowNull:false
+    password: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 })
 

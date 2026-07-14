@@ -1,0 +1,47 @@
+/* Checkout and forms */
+.form-section {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+    padding: 2rem
+}
+
+.product-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem
+}
+
+.product-image {
+    height: 200px;
+    object-fit: contain;
+    border-radius: 8px
+}
+
+.price-tag {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    font-weight: 700
+}
+
+.btn-whatsapp {
+    background-color: #25d366;
+    color: white
+}
+
+.btn-whatsapp:hover {
+    background-color: #128c7e
+}
+
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 1rem 0
+}
+
+.total-section {
+    background: var(--light-bg);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem
+}

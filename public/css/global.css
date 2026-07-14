@@ -1,0 +1,17 @@
+/* Global variables and base rules */
+:root{
+  --primary-color:#2e7d32;
+  --secondary-color:#6c757d;
+  --accent-color:#e74c3c;
+  --light-bg:#f8f9fa;
+  --dark-text:#212529;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--light-bg);
+  color:var(--dark-text);
+}
+.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}
+img{max-width:100%;height:auto;display:block}

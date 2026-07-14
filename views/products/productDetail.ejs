@@ -1,0 +1,97 @@
+<%- include("../partials/header.ejs") %>
+
+<body>
+<%- include('../partials/navbar') %>
+  <div class="container py-5">
+
+    
+    <div class="product-card">
+      <div class="row g-0">
+        <!-- Imagem do Produto -->
+        <div class="col-md-5">
+          <img src="<%= product.image %>" class="product-image" alt="<%= product.title %>">
+        </div>
+
+        <!-- Detalhes do Produto -->
+        <div class="col-md-7">
+          <div class="card-body p-4 p-lg-5">
+            <h1 class="product-title"><%= product.title %></h1>
+
+            <!-- Avaliação (placeholder) -->
+            <div class="mb-3">
+              <span class="text-warning">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-half"></i>
+              </span>
+              <span class="ms-2 text-muted">(42 avaliações)</span>
+            </div>
+
+            <p class="product-description mb-4"><%= product.description %></p>
+
+            <% if (product.stock <= 0) { %>
+            <div class="alert alert-danger out-of-stock mb-4" role="alert">
+              <i class="bi bi-exclamation-triangle-fill"></i> Produto esgotado
+            </div>
+            <button class="btn btn-outline-secondary btn-lg" disabled>
+              Avise-me quando chegar
+            </button>
+            <% } else { %>
+            <div class="d-flex align-items-center mb-3">
+              <div class="d-flex align-items-baseline">
+                <span class="product-price"> R$ <%= typeof product.price === 'number' ? product.price.toFixed(2).replace('.', ',') : String(product.price).replace('.', ',') %></span>
+                <span class="price-unit">
+                  <% if (['legumes', 'verduras', 'frutas'].includes(product.category.toLowerCase())) { %>
+                  /kg
+                  <% } else if (product.category.toLowerCase() === 'artesanato') { %>
+                  /unid.
+                  <% } %>
+                </span>
+              </div>
+              <span class="badge bg-success stock-badge ms-3">
+                <i class="bi bi-check-circle-fill"></i>
+                <% if (['legumes', 'verduras', 'frutas'].includes(product.category.toLowerCase())) { %>
+                Disponível
+                <% } else { %>
+                Em estoque: <%= product.stock %> unid.
+                <% } %>
+              </span>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 mt-4">
+              <a href="/products/purchase/<%= product.id %>" class="btn btn-buy btn-lg text-white">
+                <i class="bi bi-bag-check-fill me-2"></i> Comprar agora
+              </a>
+
+              <button class="btn btn-cart btn-warning position-relative" onclick='addToCart({
+                  id: "<%= product.id %>",
+                  title: "<%= product.title %>",
+                  price: <%= product.price %>,
+                  category: "<%= product.category %>"
+                  })'>
+                <i class="bi bi-cart-plus-fill me-2"></i> Adicionar ao Carrinho
+              </button>
+
+
+
+
+            </div>
+
+            <div class="mt-4 pt-3 border-top">
+              <p class="mb-2"><i class="bi bi-truck text-primary me-2"></i> Frete a combinar</p>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include("../partials/carrinho/carrinho-modal.ejs") %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <%- include("../partials/carrinho/carrinho-scripts.ejs") %>
+</body>
+
+</html>

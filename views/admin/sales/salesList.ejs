@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Listagem de Vendas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body>
+    <%- include('../../partials/navbar') %>
+    <div class="container-lg py-5">
+      <div class="d-flex justify-content-between align-items-center py-3 border-bottom mb-4">
+        <div>
+          <h1 class="h2 mb-1"><i class="bi bi-list-check text-primary"></i> Listagem de Vendas</h1>
+          <p class="text-muted mb-0">Gerenciar e visualizar todas as vendas.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/admin/sales" class="btn btn-outline-info">
+            <i class="bi bi-bar-chart"></i> Ver Dashboard
+          </a>
+          <a href="/admin/manage" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+          </a>
+        </div>
+      </div>
+
+      <form method="GET" class="row g-3 mb-4 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Data inicial</label>
+          <input type="date" class="form-control" name="startDate" value="<%= filters.startDate %>">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Data final</label>
+          <input type="date" class="form-control" name="endDate" value="<%= filters.endDate %>">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Status</label>
+          <select class="form-select" name="status">
+            <option value="">Todos</option>
+            <option value="pending" <%= filters.status === 'pending' ? 'selected' : '' %>>Pendente</option>
+            <option value="confirmed" <%= filters.status === 'confirmed' ? 'selected' : '' %>>Confirmada</option>
+            <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected' : '' %>>Cancelada</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">Categoria</label>
+          <select class="form-select" name="category">
+            <option value="">Todas</option>
+            <% categories.forEach((category) => { %>
+              <option value="<%= category %>" <%= filters.category === category ? 'selected' : '' %>><%= category %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+      </form>
+
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">Total de vendas: <span class="badge bg-primary"><%= sales.length %></span></h5>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-dark">
+                <tr>
+                  <th>#</th>
+                  <th>Cliente</th>
+                  <th>Itens</th>
+                  <th>Total</th>
+                  <th>Pagamento</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (sales.length > 0) { %>
+                  <% sales.forEach((sale, index) => { %>
+                    <tr>
+                      <td><strong><%= index + 1 %></strong></td>
+                      <td><%= sale.customerName %></td>
+                      <td>
+                        <small class="text-muted">
+                          <span class="badge bg-secondary"><%= (sale.items || []).length %> item(ns)</span>
+                          <a href="#" class="badge bg-info text-white ms-1" data-bs-toggle="modal" data-bs-target="#itemsModal<%= sale.id %>">
+                            Ver detalhes
+                          </a>
+                        </small>
+                      </td>
+                      <td><strong>R$ <%= Number(sale.total).toFixed(2).replace('.', ',') %></strong></td>
+                      <td><%= sale.paymentMethod %></td>
+                      <td>
+                        <% if (sale.status === 'confirmed') { %>
+                          <span class="badge bg-success">Confirmada</span>
+                        <% } else if (sale.status === 'cancelled') { %>
+                          <span class="badge bg-danger">Cancelada</span>
+                        <% } else { %>
+                          <span class="badge bg-warning text-dark">Pendente</span>
+                        <% } %>
+                      </td>
+                      <td>
+                        <small><%= new Date(sale.createdAt).toLocaleString('pt-BR') %></small>
+                      </td>
+                      <td>
+                        <% if (sale.status === 'pending') { %>
+                          <div class="btn-group btn-group-sm" role="group">
+                            <form method="POST" class="d-inline">
+                              <button formaction="/admin/sales/confirm/<%= sale.id %>" class="btn btn-success" title="Confirmar venda">
+                                <i class="bi bi-check2"></i>
+                              </button>
+                            </form>
+                            <form method="POST" class="d-inline">
+                              <button formaction="/admin/sales/cancel/<%= sale.id %>" class="btn btn-danger" onclick="return confirm('Cancelar esta venda?')" title="Cancelar venda">
+                                <i class="bi bi-x"></i>
+                              </button>
+                            </form>
+                          </div>
+                        <% } else { %>
+                          <span class="text-muted small">
+                            <i class="bi bi-check-circle"></i> Finalizada
+                          </span>
+                        <% } %>
+                      </td>
+                    </tr>
+
+                    <!-- Modal de Itens -->
+                    <div class="modal fade" id="itemsModal<%= sale.id %>" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Itens da Venda #<%= sale.id %></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                          </div>
+                          <div class="modal-body">
+                            <h6>Cliente: <%= sale.customerName %></h6>
+                            <p class="mb-2"><strong>Status:</strong> <%= sale.status === 'confirmed' ? 'Confirmada' : sale.status === 'cancelled' ? 'Cancelada' : 'Pendente' %></p>
+                            <hr />
+                            <% (sale.items || []).forEach((item, i) => { %>
+                              <div class="mb-3 pb-2 border-bottom">
+                                <p class="mb-1"><strong><%= i + 1 %>. <%= item.title %></strong></p>
+                                <p class="mb-1 text-muted small">
+                                  Quantidade: <%= item.quantity %> | Preço: R$ <%= parseFloat(item.price).toFixed(2).replace('.', ',') %>
+                                </p>
+                              </div>
+                            <% }); %>
+                            <% if (sale.notes && sale.notes !== '...') { %>
+                              <hr />
+                              <p><strong>Observações:</strong></p>
+                              <p class="text-muted"><%= sale.notes %></p>
+                            <% } %>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                      <i class="bi bi-inbox"></i> Nenhuma venda encontrada
+                    </td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -23,16 +23,21 @@ O desafio proposto busca apoiar a transformação digital de negócios familiare
 
 ## 💻 Funcionalidades Principais
 
-- 🛍️ **Catálogo de Produtos:** lista de produtos artesanais e hortifrúti disponíveis.  
-- 🧾 **Carrinho de Compras:** permite selecionar produtos e gerar um resumo do pedido.  
-- 📲 **Integração com WhatsApp:** ao finalizar a compra, o cliente é **redirecionado automaticamente para o WhatsApp**, com uma mensagem contendo **todos os detalhes do pedido**, que é enviada diretamente para a Sra. Lourdes.  
-- 🧰 **Painel de Administração:** para gerenciar produtos e informações de forma simples.
+- 🛍️ **Catálogo de Produtos:** exibe produtos artesanais e hortifrúti com foto, preço, categoria e estoque disponível.  
+- 🛒 **Carrinho de Compras Dinâmico:** o cliente pode adicionar produtos ao carrinho, visualizar o resumo dos itens e seguir para o checkout.  
+- 💳 **Checkout de Pedido:** formulário de compra com nome, forma de pagamento e observações, validando itens no carrinho e estoque disponível.  
+- 📲 **Integração com WhatsApp:** o pedido é enviado para o WhatsApp com detalhes completos dos produtos, valores, quantidade, forma de pagamento e observações.  
+- 🧾 **Registro de Vendas:** cada pedido é salvo no banco de dados como venda pendente, com itens, total, status e informações do cliente.  
+- 📊 **Gestão de Vendas:** painel administrativo para visualizar vendas, listar pedidos e alterar status para **confirmado** ou **cancelado**.  
+- 🔐 **Área Administrativa Protegida:** login de administrador, registro de novos administradores e sessão segura para acessar o painel.  
+- 🧰 **CRUD de Produtos:** cadastrar, editar e excluir produtos diretamente pelo painel administrativo.  
+- 📦 **Atualização de Estoque:** o sistema controla estoque automaticamente durante a compra e no checkout.
 
 ---
 
 ## 🔐 Área Administrativa
 
-> Se você quiser explorar a **área administrativa do Armazém do Sítio**, entre em contato comigo para receber um **login demo**.
+
 
 💡 Veja abaixo um GIF do painel administrativo demo:
 
@@ -41,11 +46,7 @@ O desafio proposto busca apoiar a transformação digital de negócios familiare
 
 
 
-## 🌐 Acesso Online
 
-Você pode acessar a versão pública do projeto aqui:  
-
-[https://armazemdositio-production.up.railway.app/](https://armazemdositio-production.up.railway.app/)
 
 
 
